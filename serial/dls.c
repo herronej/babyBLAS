@@ -102,7 +102,49 @@ else {
 	}
 	for(k=0; k<N-1; k++){
 		for(rows=k+1;rows<N;rows++){
-			*(a+
+			*(a+rows*N+k) = *(a+rows*N+k);
+			for(rows2=k+1;rows2<N;rows2++){
+				*(a+rows*N+rows2)= *(a+k*N+rows2) -
+				*(a+rows*N+k) * *(a+k*N+rows2);
+			}
 		}
 	}
+	
+	for (k=0; k<N-1; k++ ) {
+            for (j=k+1;j<N;j++) 
+                *(b+j)= *(b+j) - *(b+k) * *(a+N*j+k);  
+        } 
+	
+	*(b+N-1) = *(b+N-1) / *(a+N*(N-1)+(N-1));
+        for (i=N-2;i>=0;i--){
+            tmp = 0.0;
+            for (j=i+1;j<N;j++) {
+                tmp = tmp + *(a+i*N+j) * *(b+j);
+            }
+            *(b+i) = ( *(b+i) - tmp ) / *(a+i*N+i); 
+        }
+
+        for (i=0;i<N;i++) *(x+i) = *(b+i);
+
+}
 }	
+
+int strictlyDiagonallyDominant(int N, double *a){
+
+	double sum;
+	int i, testPassed, row;
+	
+	testPassed = 1;
+	row = 0;
+	sum = 0.0;
+	for(row=0;row<N;row++){
+		if(testPassed){
+			sum = 0.0;
+			for(i=0;i<N;i++) sum +=*(a+row*N+i);
+			sum-=fabs(*(a+row*N+row));
+			testPassed = fabs(*(a+row*N+row)) > sum;
+		}
+	}
+	return testPassed;
+}
+
