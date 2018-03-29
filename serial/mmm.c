@@ -1,7 +1,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	void mmm_(int *threads, int *len, double *a, double *b double *c);
+	void mmm_(int *threads, int *len, double *a, double *b, double *c);
 #ifdef __cplusplus
 	}
 #endif
@@ -46,10 +46,10 @@ for(i=0; i<veclen; i++){
 			*(c+(i*veclen+j)) += *(a+(i*venlen+k)) **(b+(k*veclen+j));
 		}
 		for (k=0; k<mod; k+=stride){
-			*(c+(i*veclen+j)) += *(a+(i*veclen+k)) **(b+(k*veclen+j))
-					+ *(a+(i*veclen+k+1)) * *(b+((k+1)*veclen+j))
-					+ *(a+(i*veclen+k+2)) * *(b+((k+2)*veclen+j))
-					+ *(a+(i*veclen+k+3)) * *(b+((k+3)*veclen+j));
+			*(c+(i*veclen+j)) += (*(a+(i*veclen+k)) * *(b+(k*veclen+j))
+					 + *(a+(i*veclen+k+1)) * *(b+((k+1)*veclen+j))
+					 + *(a+(i*veclen+k+2)) * *(b+((k+2)*veclen+j))
+					 + *(a+(i*veclen+k+3)) * *(b+((k+3)*veclen+j)));
 	
 		}
 	}	
@@ -60,7 +60,7 @@ for(i=0; i<veclen; i++){
 	for(j=0; j<veclen; j++){
 		*(c+(i*veclen+j)) = 0.0;
 		for(k=0;k<veclen;k++){
-			*(c+(i*veclen+j)) += *(a+(i*veclen+k) * *(b+(k*veclen+j));
+			*(c+(i*veclen+j)) += *(a+(i*veclen+k)) * *(b+(k*veclen+j));
 		}
 	}
 }
