@@ -73,7 +73,7 @@ void mmm_(int *threads, int *len, double *A, double *B, double *C){
 
 		}
 	}
-	for(int i = 0; numThreads; i++){
+	for(int i = 0; i < numThreads; i++){
 		pthread_join(*(thread_id+i), NULL);
 	}
 	free(numberOfRows);
