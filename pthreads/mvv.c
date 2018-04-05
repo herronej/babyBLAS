@@ -1,7 +1,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	void mvv_(int *thread, int *N, double* mat, double* vec, double* vresults);
+	void mvv_(int *threads, int *N, double* mat, double* vec, double* vresults);
 #ifdef __cplusplus
 	}
 #endif
@@ -21,10 +21,10 @@ struct args {
 	double *vresultsptr;
 };
 
-void mvv_(int *N, double* mat, double* vec, double* vresults){
+void mvv_(int *threads, int *N, double* mat, double* vec, double* vresults){
 
 	int numThreads = *threads;
-	int matrixDimension = *len;
+	int matrixDimension = *N;
 	int *numberOfRows;
 	int startRow, stopRow;
 	pthread_t *thread_id;
@@ -34,7 +34,7 @@ void mvv_(int *N, double* mat, double* vec, double* vresults){
 	if( matrixDimension < numThreads){
 		for(int i = 0; i < matrixDimension; i++){
 			for(int j = 0; j < matrixDimension; j++){
-				*(vresults+i) += *(mat+(length*i)+j) * *(vresults+j);
+				*(vresults+i) += *(mat+(matrixDimension*i)+j) * *(vresults+j);
 			}
 		}
 	}
@@ -59,7 +59,7 @@ void mvv_(int *N, double* mat, double* vec, double* vresults){
 			thread_args = (struct args *) malloc(sizeof(struct args));
 			thread_args->N = matrixDimension;
 			thread_args->startRow = startRow;
-			thread-args->stopRow = stopRow;
+			thread_args->stopRow = stopRow;
 			thread_args->matptr = mat;
 			thread_args->vecptr = vec;
 			thread_args->vresultsptr = vresults;
@@ -91,7 +91,7 @@ void *mvv_thread_worker(struct args *thread_args){
 
         for(i=rowStart;i<rowStop;i++){
                 for(j=0;j<N;j++){
-                        *(vresults+i) += *(mat+(length*i)+j) * *(vresults+j);
+                        *(vresults+i) += *(mat+(N*i)+j) * *(vresults+j);
                 }
         }
 

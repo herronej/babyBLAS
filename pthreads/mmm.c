@@ -58,6 +58,7 @@ void mmm_(int *threads, int *len, double *A, double *B, double *C){
 
 		stopRow = 0;
 		for(int i = 0; i < numThreads; i++){
+			{
 			startRow = stopRow;
 			stopRow = startRow + *(numberOfRows+i);
 			thread_args = (struct args *) malloc(sizeof(struct args));
@@ -70,16 +71,16 @@ void mmm_(int *threads, int *len, double *A, double *B, double *C){
 
 			pthread_create(thread_id+i, NULL, &mmm_thread_worker, thread_args);
 		
-
+			}
 		}
-	}
-	for(int i = 0; i < numThreads; i++){
-		pthread_join(*(thread_id+i), NULL);
-	}
-	free(numberOfRows);
-	free(thread_id);
+	
+		for(int i = 0; i < numThreads; i++){
+			pthread_join(*(thread_id+i), NULL);
+		}
+		free(numberOfRows);
+		free(thread_id);
 
-    }
+    	}
 }
 
 void *mmm_thread_worker(struct args *thread_args){

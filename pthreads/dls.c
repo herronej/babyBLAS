@@ -19,7 +19,7 @@ struct args {
     int stopRow;
     double *aptr;
     double *bptr;
-    double *cptr;
+    double *xptr;
 };
 
 int strictlyDiagonallyDominant(int N, double *a);
@@ -177,7 +177,7 @@ void dls_(int* num_threads, int* len, double* a, double* b, double* x){
                 	thread_args->stopRow = stopRow; 
                 	thread_args->aptr = a;
                 	thread_args->bptr = b;
-                	thread_args->cptr = c;
+                	thread_args->xptr = x;
 
                 	pthread_create( thread_id+i, NULL, &dls_thread_worker, thread_args );
             		}
@@ -196,14 +196,14 @@ void *dls_thread_worker(struct args *thread_args){
 	int i, j, k;
     	double val;
     	int rowStart, rowStop, N; 
-    	double *a, *b, *c;
+    	double *a, *b, *x;
 
 	N = thread_args->N;
     	rowStart = thread_args->startRow;
     	rowStop = thread_args->stopRow; 
     	a = thread_args->aptr;
     	b = thread_args->bptr;
-    	c = thread_args->cptr;
+    	x = thread_args->xptr;
 
 	int u;
 	int singular, iPivot, rows, rows2;
@@ -212,7 +212,6 @@ void *dls_thread_worker(struct args *thread_args){
 	double ZERO = 0.0;
 	int *p;
 	
-	N = *len;
 
 	if(! strictlyDiagonallyDominant(N, a)){
 		p = malloc( (N-1) * sizeof(int) );

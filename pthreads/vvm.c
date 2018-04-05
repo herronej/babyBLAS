@@ -17,22 +17,24 @@ struct args {
 	int N;
 	int startRow;
 	int stopRow;
-	double *va;
-	double *vb;
-	double *ma;	
+	double *vaptr;
+	double *vbptr;
+	double *maptr;	
 };
 
 void vvm_(int *threads, int *len, double *va, double *vb, double *ma){
 
 	int numThreads = *threads;
 	int matrixDimension = *len;
-	int numberOfRows;
+	int *numberOfRows;
 	int startRow, stopRow;
 	pthread_t *thread_id;
 	struct args *thread_args;
 
 	
 	int alength = *len;
+
+	//int i, j;
 
 	if(matrixDimension < numThreads){
 		for(int i=0;i<alength;i++){
@@ -58,7 +60,7 @@ void vvm_(int *threads, int *len, double *va, double *vb, double *ma){
 		for(int i = 0; i < numThreads; i++){
 			{startRow=stopRow;
 			stopRow=startRow+*(numberOfRows+i);
-			thread__args = (struct args*) malloc(sizeof(struct args));
+			thread_args = (struct args*) malloc(sizeof(struct args));
 			thread_args->N = matrixDimension;
 			thread_args->startRow = startRow;
 			thread_args->stopRow = stopRow;
@@ -80,7 +82,7 @@ void vvm_(int *threads, int *len, double *va, double *vb, double *ma){
 
 void *vvm_thread_worker(struct args *thread_args){
 	
-	int i, j;
+	//int i, j;
 	double val;
 	int rowStart, rowStop, N;
 	double *va, *vb, *ma;

@@ -4,11 +4,27 @@ include ../Makefile.inc
 
 all: lib
 
-mmm.o: mmm.c
-	$(CC) $(CFLAGS) -fopenmp -c mmm.c
+vvm.o: vvm.c
+	$(CC) $(CFLAGS) -c vvm.c
 
-lib: mmm.o
-	ar -rc libopenmp_bblas.a mmm.o
+mmm.o: mmm.c
+	$(CC) $(CFLAGS) -c mmm.c
+
+mvv.o: mvv.c
+	$(CC) $(CFLAGS) -c mvv.c
+
+dot.o: dot.c
+	$(CC) $(CFLAGS) -c dot.c
+
+dls.o: dls.c
+	$(CC) $(CFLAGS) -c dls.c
+
+ils.o: ils.c
+	$(CC) $(CFLAGS) -c ils.c
+
+
+lib: vvm.o mmm.o mvv.o dot.o dls.o ils.o
+	ar -rc libopenmp_bblas.a vvm.o mmm.o mvv.o dot.o dls.o ils.o
 	ranlib libopenmp_bblas.a
 
 clean:

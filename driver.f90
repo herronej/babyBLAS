@@ -14,7 +14,7 @@ external walltime, cputime
 character(len=8) :: carg1, carg2, carg3, carg4
 
 real (kind=8), dimension(:), allocatable :: veca, vecb
-real (kind=8), dimension(:,:), allocatable :: matrixa, matrixb, matrix
+real (kind=8), dimension(:,:), allocatable :: matrixa, matrixb, matrixc
 
 #ifdef ACCURACY_TEST
 

@@ -24,12 +24,11 @@ struct args {
 void dot_(int *threads, int *N, double *vec1, double *vec2, double *rvec){
 
 	int numThreads = *threads;
-	int vectorDimension = *len;
+	int vectorDimension = *N;
 	int *numberOfRows;
 	int startRow, stopRow;
 	pthread_t *thread_id;
 	struct args *thread_args;
-	int len = *N;
 
 
 	int i;
@@ -43,10 +42,10 @@ void dot_(int *threads, int *N, double *vec1, double *vec2, double *rvec){
 		thread_id = (pthread_t *) malloc (numThreads * sizeof(pthread_t));
 		numberOfRows = (int *) malloc (numThreads * sizeof(int));
 		for(int i = 0; i < numThreads; i++){
-			*(numberOfRows+i) = matrixDimension/numThreads;
+			*(numberOfRows+i) = vectorDimension/numThreads;
 		}
 		
-		for(int i = 0; i < matrixDimension % numThreads; i++){
+		for(int i = 0; i < vectorDimension % numThreads; i++){
 			*(numberOfRows+i) = *(numberOfRows+i) + 1;
 		}
 
@@ -55,12 +54,12 @@ void dot_(int *threads, int *N, double *vec1, double *vec2, double *rvec){
 			startRow = stopRow;
 			stopRow = startRow + *(numberOfRows+i);
 			thread_args = (struct args *) malloc(sizeof(struct args));
-			thread_args->N = matrixDimension;
+			thread_args->N = vectorDimension;
 			thread_args->startRow = startRow;
 			thread_args->stopRow = stopRow;
 			thread_args->v1ptr = vec1;
 			thread_args->v2ptr = vec2;
-			thread_args->rvec = rvecptr;
+			thread_args->rvecptr = rvec;
 
 			pthread_create(thread_id+i, NULL, &dot_thread_worker, thread_args);
 		}
