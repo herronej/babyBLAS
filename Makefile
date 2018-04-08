@@ -2,9 +2,9 @@
 
 include Makefile.inc
 
-all : driver serial lbstime
+all : driver serial openmp pthreads lbstime
 
-driver: driver.o serial lbstime
+driver: driver.o serial lbstime openmp 
 	$(F90) driver.o -o driver $(LDLIBS)  
 
 driver.o: driver.f90
@@ -16,18 +16,28 @@ serial:
 lbstime: 
 	cd lbstime && $(MAKE)
 
+pthreads:
+	cd pthreads && $(MAKE) 
+
+openmp:
+	cd openmp && $(MAKE) 
+
 clean:
 	cd serial && $(MAKE) clean
 	cd lbstime && $(MAKE) clean
+	cd pthreads && $(MAKE) clean
+	cd openmp && $(MAKE) clean
 	rm *.o
 	touch *.f90
 
 pristine:
 	cd serial && $(MAKE) pristine 
 	cd lbstime && $(MAKE) pristine
+	cd pthreads && $(MAKE) pristine
+	cd openmp && $(MAKE) pristine
 	rm *.o	
 	rm driver
 	touch *.f90
 
 #This next target get "made" every time
-.PHONY: serial lbstime
+.PHONY: serial lbstime openmp pthreads
