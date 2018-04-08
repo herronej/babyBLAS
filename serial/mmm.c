@@ -7,6 +7,9 @@ extern "C" {
 #endif
 
 void mmm_(int *threads, int *len, double *a, double *b, double *c){
+
+	//printf(*threads);
+
 	int i, j, k;
 	int veclen = *len;
 	int mod;
@@ -64,5 +67,6 @@ for(i=0; i<veclen; i++){
 		}
 	}
 }
+
 #endif
 }

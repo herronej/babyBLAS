@@ -1,9 +1,5 @@
-# definitions for makefile variables
-
 F90 = gfortran
-CC = gcc
+CC  = gcc
 FFLAGS = -cpp -O2
-CFLAGS = -O2 -fopenmp
-MYLIBS = -L./openmp -lopenmp_bblas -L./pthreads -lpthreads_bblas\
-	-L./serial -lserial_bblas -L./lbstime -llbstime
-SYSLIBS = -lgomp -lpthread
+CFLAGS = -O2
+LDLIBS = -L./serial -lserial_bblas -L./lbstime -llbstime 

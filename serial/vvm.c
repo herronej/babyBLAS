@@ -1,12 +1,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	void vvm_(int *len, double *va, double *vb, double *ma);
+	void vvm_(int *threads, int *len, double *va, double *vb, double *ma);
 #ifdef __cplusplus
 	}
 #endif
 
-void vvm_(int *len, double *va, double *vb, double *ma){
+void vvm_(int *threads, int *len, double *va, double *vb, double *ma){
 	int i, j;
 	int alength = *len;
 	for(i=0;i<alength;i++){

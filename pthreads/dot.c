@@ -35,7 +35,7 @@ void dot_(int *threads, int *N, double *vec1, double *vec2, double *rvec){
 	if (vectorDimension < numThreads){
 		// single threaded
 		for(i=0; i< vectorDimension; i++){
-			*(rvec+i) = *(vec1+i) + *(vec2+i);
+			*(rvec) += *(vec1+i) * *(vec2+i);
 		}
 	}	
 	else{
@@ -87,7 +87,7 @@ void *dot_thread_worker(struct args *thread_args){
 	rvec = thread_args->rvecptr;
 
 	for(i=rowStart; i<rowStop; i++){
-		*(rvec+i) = *(vec1+i) + *(vec2+i);
+		*(rvec) += *(vec1+i) * *(vec2+i);
 	}
 	
 	free(thread_args);
