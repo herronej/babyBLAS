@@ -13,18 +13,17 @@ extern "C" {
 void *dot_thread_worker();
 
 struct args {
-	int N;
 	int startRow;
 	int stopRow;
 	double *v1ptr;
 	double *v2ptr;
-	double *rvecptr;
+	double *rvalptr;
 };
 
-void dot_(int *threads, int *N, double *vec1, double *vec2, double *rvec){
+void dot_(int *threads, int *N, double *vec1, double *vec2, double *rval){
 
 	int numThreads = *threads;
-	int vectorDimension = *N;
+	int len = *N;
 	int *numberOfRows;
 	int startRow, stopRow;
 	pthread_t *thread_id;
@@ -32,20 +31,22 @@ void dot_(int *threads, int *N, double *vec1, double *vec2, double *rvec){
 
 
 	int i;
-	if (vectorDimension < numThreads){
-		// single threaded
-		for(i=0; i< vectorDimension; i++){
-			*(rvec) += *(vec1+i) * *(vec2+i);
+	if (len < numThreads){
+		
+        	for(i=0; i < len; i++){
+
+                	*rval += (*(vec1+i) * *(vec2+i));
+        
 		}
 	}	
 	else{
 		thread_id = (pthread_t *) malloc (numThreads * sizeof(pthread_t));
 		numberOfRows = (int *) malloc (numThreads * sizeof(int));
 		for(int i = 0; i < numThreads; i++){
-			*(numberOfRows+i) = vectorDimension/numThreads;
+			*(numberOfRows+i) = len/numThreads;
 		}
 		
-		for(int i = 0; i < vectorDimension % numThreads; i++){
+		for(int i = 0; i < len % numThreads; i++){
 			*(numberOfRows+i) = *(numberOfRows+i) + 1;
 		}
 
@@ -54,12 +55,11 @@ void dot_(int *threads, int *N, double *vec1, double *vec2, double *rvec){
 			startRow = stopRow;
 			stopRow = startRow + *(numberOfRows+i);
 			thread_args = (struct args *) malloc(sizeof(struct args));
-			thread_args->N = vectorDimension;
 			thread_args->startRow = startRow;
 			thread_args->stopRow = stopRow;
 			thread_args->v1ptr = vec1;
 			thread_args->v2ptr = vec2;
-			thread_args->rvecptr = rvec;
+			thread_args->rvalptr = rval;
 
 			pthread_create(thread_id+i, NULL, &dot_thread_worker, thread_args);
 		}
@@ -77,18 +77,17 @@ void *dot_thread_worker(struct args *thread_args){
 	int i, j, k;
 	double val;
 	int rowStart, rowStop, N;
-	double *vec1, *vec2, *rvec;
+	double *vec1, *vec2, *rval;
 
-	N = thread_args->N;
 	rowStart = thread_args->startRow;
 	rowStop = thread_args->stopRow;
 	vec1 = thread_args->v1ptr;
 	vec2 = thread_args->v2ptr;
-	rvec = thread_args->rvecptr;
+	rval = thread_args->rvalptr;
 
-	for(i=rowStart; i<rowStop; i++){
-		*(rvec) += *(vec1+i) * *(vec2+i);
-	}
+	for(i=rowStart; i < rowStop; i++){
+        	*rval += (*(vec1+i) * *(vec2+i));
+        }
 	
 	free(thread_args);
 	pthread_exit(NULL);

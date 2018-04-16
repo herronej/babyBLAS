@@ -13,10 +13,16 @@ void dot_(int *threads, int *N, double *vec1, double *vec2, double *rval){
 
 	int len = *N;
 
-#pragma omp parallel shared(len) private(i)
-{
+    omp_set_num_threads(*threads);
+	
+	#pragma omp parallel for
 	for(i=0; i < len; i++){
-		*(rval) += *(vec1+i) * *(vec2+i);
-	}	
+
+                *rval += (*(vec1+i) * *(vec2+i));
+
+		//double x = *rval;
+
+		//printf("rval: %d\n", x);
+        }	
 }
-}
+

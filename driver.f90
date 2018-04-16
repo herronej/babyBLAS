@@ -14,10 +14,10 @@ external walltime, cputime
 
 character (len=8) :: carg1, carg2, carg3, carg4
 
-real (kind=8), dimension(:), allocatable :: veca, vecb, vecx
-real (kind=8), dimension(:,:), allocatable :: matrixa, matrixb, matrixc
+real (kind=8), dimension(:), allocatable :: veca, vecb, vecx, dotveca, dotvecb, vecc, vecr
+real (kind=8), dimension(:,:), allocatable :: matrixa, matrixb, matrixc, rotm
 logical :: DIAG_DOMINANT, SPARSE_MATRIX
-real (kind=8) :: residual
+real (kind=8) :: residual, dotvecr
 
 DIAG_DOMINANT = .false.
 SPARSE_MATRIX = .false.
@@ -56,6 +56,11 @@ allocate ( matrixa(NDIM,NDIM), stat=ierr)
 allocate ( veca(NDIM), stat=ierr)
 allocate ( vecb(NDIM), stat=ierr)
 allocate ( vecx(NDIM), stat=ierr)
+allocate ( vecc(3), stat=ierr)
+allocate ( dotveca(NDIM), stat=ierr)
+allocate ( dotvecb(NDIM), stat=ierr)
+allocate ( rotm(3,3), stat=ierr)
+allocate ( vecr(3), stat=ierr)
 
 open (unit=5,file="linsolve_a.dat",status="old")
 do i = 1, NDIM
@@ -74,6 +79,26 @@ do i = 1, NDIM
    read(5,*) veca(i)
 enddo
 close(5)
+
+do i = 1, NDIM
+  dotveca(i) = i*1.0
+  dotvecb(i) = 1.0/dotveca(i)
+enddo
+
+rotm(1,1) = 0.0
+rotm(2,1) = -1.0
+rotm(3,1) = 0.0
+rotm(1,2) = 1.0
+rotm(2,2) = 0.0
+rotm(3,2) = 0.0
+rotm(1,3) = 0.0
+rotm(2,3) = 0.0
+rotm(3,3) = 1.0
+ 
+vecc(1) = 1.0
+vecc(2) = 0.0
+vecc(3) = 0.0
+
 
 print *, "Files read into program"
 
@@ -197,6 +222,7 @@ cpu_start = cputime()
 
 #ifndef LS_TEST
 call mmm(nthreads, NDIM, matrixa, matrixb, matrixc)
+!call dls(nthreads, NDIM, matrixa, vecb, vecx)
 #else
 #ifndef ITERATIVE 
 call dls(nthreads, NDIM, matrixa, vecb, vecx)
@@ -245,6 +271,13 @@ mflops2 = (2.0/3.0)*dble(NDIM)**3/ (wall_end-wall_start)/ 1.0e6
 print *, NDIM, residual, cpu_end-cpu_start, wall_end-wall_start,  mflops, mflops2
 #endif
 
+!call dot(nThreads, NDIM, dotveca, dotvecb, dotvecr);
+!call mvv(nThreads, 3, rotm, vecc, vecr)
+
+
+!print*, "dot vec answer: ", dotvecr
+!print*, "mvv answer: ", vecr
+
 ! Free the memory that was allocated based on which version of the program was
 ! run.
 
@@ -253,7 +286,12 @@ if (allocated(matrixb)) deallocate(matrixb)
 if (allocated(matrixc)) deallocate(matrixc)
 if (allocated(veca)) deallocate(veca)
 if (allocated(vecb)) deallocate(vecb)
+if (allocated(vecc)) deallocate(vecc)
 if (allocated(vecx)) deallocate(vecx)
+if (allocated(dotveca)) deallocate(dotveca)
+if (allocated(dotvecb)) deallocate(dotvecb)
+if (allocated(rotm)) deallocate(rotm)
+if (allocated(vecr)) deallocate(vecr)
 
 #ifndef ACCURACY_TEST
 enddo
