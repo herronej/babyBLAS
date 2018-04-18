@@ -262,7 +262,7 @@ void *dls_thread_worker7( struct args6 *thread_args  ) {
     b = thread_args->Bptr;
 
 
-    printf("rowStart: %d rowStop: %d\n", rowStart, rowStop);
+    //printf("rowStart: %d rowStop: %d\n", rowStart, rowStop);
 
     for (i=rowStart;i<rowStop;i++) {
         sum1 = 0.0;
@@ -291,7 +291,7 @@ void *dls_thread_worker8( struct args7 *thread_args  ) {
     b = thread_args->Bptr;
 
 
-    printf("rowStart: %d rowStop: %d\n", rowStart, rowStop);
+    //printf("rowStart: %d rowStop: %d\n", rowStart, rowStop);
 
     for (rowStart=0;i<rowStop;i++) *(x+i) = 0.0;
 

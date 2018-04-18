@@ -28,13 +28,13 @@ void mvv_(int *threads, int *N, double* mat, double* vec, double* vresults){
 
 	int numThreads = *threads;
 
-        printf("numthreads: %d\n", numThreads);
+        //printf("numthreads: %d\n", numThreads);
 
 	//printf("", );
 
 	int length = *N;
 
-	printf("length: %d\n", length);
+	//printf("length: %d\n", length);
 
 	int *numberOfRows;
 	int startRow, stopRow;
@@ -49,7 +49,7 @@ void mvv_(int *threads, int *N, double* mat, double* vec, double* vresults){
 		for(i=0;i<length;i++){
 	                for(j=0;j<length;j++){
         	                *(vresults+i) += *(mat+(length*i)+j) * *(vec+j);
-                	        printf("%f\n", *(vresults+i));
+                	        //printf("%f\n", *(vresults+i));
                 	}
         	}
 	}
@@ -105,7 +105,7 @@ void *mvv_thread_worker(struct args *thread_args){
         vec = thread_args->vecptr;
         vresults = thread_args->vresultsptr;
 
-	printf("N: %d rowStart: %d rowStop: %d\n", N, rowStart, rowStop);
+	//printf("N: %d rowStart: %d rowStop: %d\n", N, rowStart, rowStop);
 	/*
         for(i=rowStart;i<rowStop;i++){
                 for(j=0;j<N;j++){

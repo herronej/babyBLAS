@@ -221,6 +221,9 @@ wall_start = walltime()
 cpu_start = cputime()
 
 #ifndef LS_TEST
+!call vvm(nthreads, NDIM, veca, vecb, matrixc)
+!call dot(nthreads, NDIM, veca, vecb, vecx);
+!call mvv(nthreads, NDIM, matrixa, veca, vecx)
 call mmm(nthreads, NDIM, matrixa, matrixb, matrixc)
 !call dls(nthreads, NDIM, matrixa, vecb, vecx)
 #else
@@ -261,14 +264,17 @@ enddo
 mflops  = 2*dble(NDIM)**3/ (cpu_end-cpu_start) / 1.0e6
 mflops2 = 2*dble(NDIM)**3/ (wall_end-wall_start)/ 1.0e6
 
-print *, NDIM, trace, cpu_end-cpu_start, wall_end-wall_start,  mflops, mflops2
+!print *, NDIM, trace, cpu_end-cpu_start, wall_end-wall_start,  mflops, mflops2
+print*, wall_end-wall_start
+
 #else
 
 ! For direct linear solver only, add option for iterative linear solver
 mflops  = (2.0/3.0)*dble(NDIM)**3/ (cpu_end-cpu_start) / 1.0e6
 mflops2 = (2.0/3.0)*dble(NDIM)**3/ (wall_end-wall_start)/ 1.0e6
  
-print *, NDIM, residual, cpu_end-cpu_start, wall_end-wall_start,  mflops, mflops2
+!print *, NDIM, residual, cpu_end-cpu_start, wall_end-wall_start,  mflops, mflops2
+print*, wall_end-wall_start
 #endif
 
 !call dot(nThreads, NDIM, dotveca, dotvecb, dotvecr);
