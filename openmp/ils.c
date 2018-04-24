@@ -11,13 +11,14 @@ extern "C" {
 #include <stdlib.h>
 #include <omp.h>
 
-void  dls_( int *threads, int *len, double *a, double *b, double *x );
+//void  ils_( int *threads, int *len, double *a, double *b, double *x );
 
 int zerosAlongDiagonal ( int N, double *a );
 
 int converged( int N, double *a, double *b);
 
-void ils_( int *threads, int *len,  double *a, double *b, double *x ){
+void ils_(int *threads, int *len, double *a, double *b, double *x){
+	omp_set_num_threads(*threads);
 
     	int i, j, k, N, iteration;
     	double sum1, sum2;
@@ -27,16 +28,29 @@ void ils_( int *threads, int *len,  double *a, double *b, double *x ){
 
     	N = *len;
 	
-#pragma omp parallel shared(N) private(i,j,k,iteration, sum1, sum2, ZERO, ITERATION_MAX, x0)
-{
 	if ( ! zerosAlongDiagonal( N, a ) ) {
 		x0 = malloc( N * sizeof(double) );
+	
+		//omp_set_num_threads(*threads);
+
+		//#pragma omp parallel for
+		//#pragma omp parallel shared(N) private(i)
+		//{
 		for (i=0;i<N;i++) *(x+i) = 0.0;
+		//}
+		//#pragma omp parallel shared(N) private(i)
+		//{
 		for (i=0;i<N;i++) *(x0+i) = *(b+i);
+		//}
 		ITERATION_MAX = fmax(ITERATION_MAX, N/3);
 		iteration = 0;
         	while ( !converged(N,x,x0) && iteration < ITERATION_MAX ) {
+			#pragma omp parallel shared(N) private(i)
+			{
 			for (i=0;i<N;i++) *(x0+i) = *(x+i);
+			}
+			#pragma omp parallel shared(N) private(i,j,sum1,sum2)
+			{
 			for (i=0;i<N;i++) { 
                 		sum1 = 0.0;
                 		for (j=0;j<i-1;j++) sum1+= *(a+i*N+j)* *(x0+j); 
@@ -44,8 +58,10 @@ void ils_( int *threads, int *len,  double *a, double *b, double *x ){
                 		for (j=i+1;j<N;j++) sum2+= *(a+i*N+j)* *(x0+j); 
                 		*(x+i) = ( *(b+i) - sum1 - sum2 ) / *(a+i*N+i);
             		}
+			}
 			iteration++;
 		}
+
 		free(x0);
 		if ( iteration == ITERATION_MAX) {
 			printf(" *** ITERATIVE SOLVER FAILED TO REACH CONVERGENCE AFTER  ***\n");
@@ -59,7 +75,7 @@ void ils_( int *threads, int *len,  double *a, double *b, double *x ){
         	dls_( threads, len, a, b, x );
 	}
 }
-}
+
 
 int zerosAlongDiagonal ( int N, double *a ) {
 
@@ -68,10 +84,13 @@ int zerosAlongDiagonal ( int N, double *a ) {
     	int foundZero;
 
     	foundZero = 0;
+	#pragma omp parallel shared(N, foundZero) private(i)
+{
     	for (i=0;i<N;i++) { 
         	if (!foundZero)  
             	foundZero = fabs(*(a+i*N+i)) == ZERO;
     	}
+}
     	return foundZero;
 }
 
@@ -83,10 +102,13 @@ int converged( int N, double *a, double *b) {
 
 	maxb=*(b+0); 
     	sum = 0.0; 
+	#pragma omp parallel shared(maxb, sum) private(i)
+{
    	for (i=0; i<N; i++) {
         	maxb = fmax(maxb,fabs(*(b+i)));
         	sum += (*(a+i)-*(b+i))*(*(a+i)-*(b+i));
     	}
+}
     	sum = sqrt(sum);
 	return (sum/maxb < TOL); 
 

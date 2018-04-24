@@ -82,7 +82,7 @@ void vvm_(int *threads, int *len, double *va, double *vb, double *ma){
 
 void *vvm_thread_worker(struct args *thread_args){
 	
-	//int i, j;
+	int i, j;
 	double val;
 	int rowStart, rowStop, N;
 	double *va, *vb, *ma;
