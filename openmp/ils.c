@@ -11,7 +11,7 @@ extern "C" {
 #include <stdlib.h>
 #include <omp.h>
 
-//void  ils_( int *threads, int *len, double *a, double *b, double *x );
+void  dls_( int *threads, int *len, double *a, double *b, double *x );
 
 int zerosAlongDiagonal ( int N, double *a );
 

@@ -265,7 +265,7 @@ mflops  = 2*dble(NDIM)**3/ (cpu_end-cpu_start) / 1.0e6
 mflops2 = 2*dble(NDIM)**3/ (wall_end-wall_start)/ 1.0e6
 
 !print *, NDIM, trace, cpu_end-cpu_start, wall_end-wall_start,  mflops, mflops2
-print*, wall_end-wall_start
+print*, mflops2
 
 #else
 
@@ -274,7 +274,7 @@ mflops  = (2.0/3.0)*dble(NDIM)**3/ (cpu_end-cpu_start) / 1.0e6
 mflops2 = (2.0/3.0)*dble(NDIM)**3/ (wall_end-wall_start)/ 1.0e6
  
 !print *, NDIM, residual, cpu_end-cpu_start, wall_end-wall_start,  mflops, mflops2
-print*, wall_end-wall_start
+print*, mflops2
 #endif
 
 !call dot(nThreads, NDIM, dotveca, dotvecb, dotvecr);

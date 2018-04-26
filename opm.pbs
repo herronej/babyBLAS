@@ -1,0 +1,17 @@
+#PBS -N OMP_MMM_40
+#PBS -j oe
+#PBS -m abe
+#PBS -l nodes=1:hammer:ppn=40
+#PBS -l walltime=1:00:00
+#
+cd CSC440/babyBLAS
+driver 9000 9000 100 40
+driver 9000 9000 100 40
+driver 9000 9000 100 40
+driver 9000 9000 100 40
+driver 9000 9000 100 40
+driver 9000 9000 100 40
+driver 9000 9000 100 40
+driver 9000 9000 100 40
+driver 9000 9000 100 40
+driver 9000 9000 100 40

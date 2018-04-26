@@ -14,9 +14,10 @@ void mmm_(int *threads, int *len, double *a, double *b, double *c){
 	int veclen = *len;
 
 	omp_set_num_threads(*threads);
-
+//#pragma omp for
 #pragma omp parallel shared(veclen) private(i,j,k)
 {
+#pragma omp for
 	for(i=0; i < veclen; i++){
 		for(j=0; j < veclen; j++){
 			*(c+(i*veclen+j)) = 0.0;
